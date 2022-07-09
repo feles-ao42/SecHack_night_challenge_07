@@ -45,6 +45,13 @@ def fizzbuzz():
     return jsonify({'result': fizzbuzz_number(number)})
 
 
+@app.route("/fizzbuzz/random", methods=['GET'])
+def make_random_int():
+    import random
+    number = random.randint(1, 1000)
+    return jsonify({'result': fizzbuzz_number(number)})
+
+
 if __name__ == '__main__':
     app.debug = True
     app.run()
