@@ -8,7 +8,10 @@ app.debug = True
 app.config['JSON_AS_ASCII'] = False
 CORS(app)
 
-url = "http://127.0.0.1:5555/fizzbuzz/while"
+url1 = "http://127.0.0.1:5555/fizzbuzz/while"
+url2 = "http://127.0.0.1:5555/fizzbuzz/while"
+url3 = "http://127.0.0.1:5555/fizzbuzz/while"
+url4 = "http://127.0.0.1:5555/fizzbuzz/while"
 
 
 @app.after_request
@@ -48,6 +51,16 @@ def hello_mogunabi():
     return "<p>Hi I'm fizz buzz</p>"
 
 
+def check_state_list(state, number):
+    fiz_num_return = fizzbuzz_number(number)
+    state = check_state(state, fiz_num_return)
+    sec_state = state[0]
+    hack_state = state[1]
+    sanrokugo_state = state[2]
+    return_number = int(number) + 1
+    return sec_state, hack_state, sanrokugo_state, return_number
+
+
 @app.route("/fizzbuzz/while", methods=['GET'])
 def while_fizzbuzz():
     # http://127.0.0.1:5555/fizzbuzz/random
@@ -56,18 +69,11 @@ def while_fizzbuzz():
     sanrokugo_state = request.args.get('sanrokugo_state')
     number = request.args.get('number')
     state = [sec_state, hack_state, sanrokugo_state]
-
-    fiz_num_return = fizzbuzz_number(number)
-
-    state = check_state(state, fiz_num_return)
-
-    sec_state = state[0]
-    hack_state = state[1]
-    sanrokugo_state = state[2]
-    return_number = int(number) + 1
-
-    return jsonify(
-        {"sec_state": sec_state, "hack_state": hack_state, "sanrokugo_state": sanrokugo_state, "number": return_number})
+    if sec_state == "False" or hack_state == "False" or sanrokugo_state == "False":
+        sec_state, hack_state, sanrokugo_state, return_number = check_state_list(state, number)
+        return jsonify(
+            {"sec_state": sec_state, "hack_state": hack_state, "sanrokugo_state": sanrokugo_state,
+             "number": return_number})
 
 
 @app.route("/fizzbuzz/start", methods=['GET'])
@@ -77,17 +83,23 @@ def start():
     sec_state = "False"
     hack_state = "False"
     sanrokugo_state = "False"
+    urllist = [url1, url2, url3, url4]
+    urlnum = 0
     payload = {"hack_state": hack_state, "sec_state": sec_state, "sanrokugo_state": sanrokugo_state, "number": number}
 
     while sec_state == "False" or hack_state == "False" or sanrokugo_state == "False":
-        r = requests.get(url, params=payload).json()
+        r = requests.get(urllist[urlnum], params=payload).json()
         sec_state = r["sec_state"]
         hack_state = r["hack_state"]
         sanrokugo_state = r["sanrokugo_state"]
         number = int(r["number"])
         payload = {"hack_state": hack_state, "sec_state": sec_state, "sanrokugo_state": sanrokugo_state,
                    "number": number}
-    return jsonify(sec_state, hack_state, sanrokugo_state, number)
+        if urlnum == 3:
+            urlnum = 0
+        else:
+            urlnum += 1
+    return jsonify(sec_state, hack_state, sanrokugo_state, number, urlnum)
 
 
 if __name__ == '__main__':
