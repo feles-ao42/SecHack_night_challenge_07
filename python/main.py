@@ -19,6 +19,29 @@ def after_request(response):
 def hello_mogunabi():
     return "<p>Hi I'm fizz buzz</p>"
 
+def fizzbuzz_number(number):
+    if number % 3 == 0 and number % 5 == 0:
+        return "FizzBuzz"
+    elif number % 3 == 0:
+        return "Fizz"
+    elif number % 5 == 0:
+        return "Buzz"
+    else:
+        return str(number)
+
+@app.route("/fizzbuzz", methods=['GET'])
+def fizzbuzz():
+    number = request.args.get('number')
+    if number is None:
+        return jsonify({'error': 'number is required'})
+    try:
+        number = int(number)
+    except ValueError:
+        return jsonify({'error': 'number is not integer'})
+    if number < 1 or number > 100:
+        return jsonify({'error': 'number is out of range'})
+    return jsonify({'result': fizzbuzz_number(number)})
+
 
 if __name__ == '__main__':
     app.debug = True
