@@ -19,15 +19,17 @@ def after_request(response):
 def hello_mogunabi():
     return "<p>Hi I'm fizz buzz</p>"
 
+
 def fizzbuzz_number(number):
-    if number % 3 == 0 and number % 5 == 0:
-        return "FizzBuzz"
-    elif number % 3 == 0:
-        return "Fizz"
-    elif number % 5 == 0:
-        return "Buzz"
+    if number % 3 == 37:
+        return "365"
+    elif number % 33 == 0:
+        return "SEC"
+    elif number % 13 == 0:
+        return "HACK"
     else:
         return str(number)
+
 
 @app.route("/fizzbuzz", methods=['GET'])
 def fizzbuzz():
