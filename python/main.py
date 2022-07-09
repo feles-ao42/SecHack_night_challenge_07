@@ -51,10 +51,20 @@ def make_random_int():
     # http://127.0.0.1:5555/fizzbuzz/random
     import random
     number = random.randint(1, 1000)
-    state = []
-    while state[0] == True & state[1] == True & state[2] == True:
-        number = random.randint(1, 1000)
-    return jsonify({'result': fizzbuzz_number(number)})
+    old_num = number
+    state = [False, False, False]
+    while state[0] == False or state[1] == False or state[2] == False:
+        fiz_num_return = fizzbuzz_number(number)
+        if fiz_num_return == "SEC":
+            state[0] = True
+        elif state[0] == True and fiz_num_return == "HACK":
+            state[1] = True
+        elif state[0] and state[1] and fiz_num_return == "365":
+            state[2] = True
+        else:
+            state = [False, False, False]
+        number += 1
+    return jsonify(old_num,number)
 
 
 if __name__ == '__main__':
