@@ -9,7 +9,6 @@ app.config['JSON_AS_ASCII'] = False
 CORS(app)
 
 url = "http://127.0.0.1:5555/fizzbuzz/while"
-payload = {"state": "false,false,false,784"}
 
 
 @app.after_request
@@ -34,13 +33,13 @@ def fizzbuzz_number(number):
 
 def check_state(state, fiz_num_return):
     if fiz_num_return == "SEC":
-        state[0] = True
-    elif state[0] == True and fiz_num_return == "HACK":
-        state[1] = True
-    elif state[0] and state[1] and fiz_num_return == "365":
-        state[2] = True
+        state[0] = "True"
+    elif state[0] == "True" and fiz_num_return == "HACK":
+        state[1] = "True"
+    elif state[0] == "True" and state[1] == "True" and fiz_num_return == "365":
+        state[2] = "True"
     else:
-        state = [False, False, False, fiz_num_return]
+        state = ["False", "False", "False"]
     return state
 
 
@@ -49,53 +48,46 @@ def hello_mogunabi():
     return "<p>Hi I'm fizz buzz</p>"
 
 
-@app.route("/fizzbuzz", methods=['GET'])
-def fizzbuzz():
-    # http://127.0.0.1:5555/fizzbuzz?number=37
-    number = request.args.get('number')
-    if number is None:
-        return jsonify({'error': 'number is required'})
-    try:
-        number = int(number)
-    except ValueError:
-        return jsonify({'error': 'number is not integer'})
-    if number < 1 or number > 1000:
-        return jsonify({'error': 'number is out of range'})
-    return jsonify({'result': fizzbuzz_number(number)})
-
-
-@app.route("/fizzbuzz/test", methods=['GET'])
-def test_fixxbuzz():
-    # http://127.0.0.1:5555/fizzbuzz/random
-    number = random.randint(1, 1000)
-    old_num = number
-    state = [False, False, False]
-    while state[0] == False or state[1] == False or state[2] == False:
-        fiz_num_return = fizzbuzz_number(number)
-        state = check_state(state, fiz_num_return)
-        number += 1
-    return jsonify(old_num, number)
-
-
 @app.route("/fizzbuzz/while", methods=['GET'])
 def while_fizzbuzz():
     # http://127.0.0.1:5555/fizzbuzz/random
-    state = request.args.get('state')
-    state = state.split(",")
-    fiz_num_return = fizzbuzz_number(state[3])
+    sec_state = request.args.get('sec_state')
+    hack_state = request.args.get('hack_state')
+    sanrokugo_state = request.args.get('sanrokugo_state')
+    number = request.args.get('number')
+    state = [sec_state, hack_state, sanrokugo_state]
+
+    fiz_num_return = fizzbuzz_number(number)
+
     state = check_state(state, fiz_num_return)
-    return_number = int(state[3]) + 1
-    return_state = [state[0], state[1], state[2], return_number]
-    return jsonify(return_state)
+
+    sec_state = state[0]
+    hack_state = state[1]
+    sanrokugo_state = state[2]
+    return_number = int(number) + 1
+
+    return jsonify(
+        {"sec_state": sec_state, "hack_state": hack_state, "sanrokugo_state": sanrokugo_state, "number": return_number})
 
 
 @app.route("/fizzbuzz/start", methods=['GET'])
 def start():
     # http://127.0.0.1:5555/fizzbuzz/random
-    number = random.randint(1, 1000)
-    state = [False, False, False, number]
-    r = requests.get(url, params=payload)
-    return r.text
+    number = random.randint(0, 1000)
+    sec_state = "False"
+    hack_state = "False"
+    sanrokugo_state = "False"
+    payload = {"hack_state": hack_state, "sec_state": sec_state, "sanrokugo_state": sanrokugo_state, "number": number}
+
+    while sec_state == "False" or hack_state == "False" or sanrokugo_state == "False":
+        r = requests.get(url, params=payload).json()
+        sec_state = r["sec_state"]
+        hack_state = r["hack_state"]
+        sanrokugo_state = r["sanrokugo_state"]
+        number = int(r["number"])
+        payload = {"hack_state": hack_state, "sec_state": sec_state, "sanrokugo_state": sanrokugo_state,
+                   "number": number}
+    return jsonify(sec_state, hack_state, sanrokugo_state, number)
 
 
 if __name__ == '__main__':
