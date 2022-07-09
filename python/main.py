@@ -16,7 +16,7 @@ def after_request(response):
 
 
 def fizzbuzz_number(number):
-    if number % 37 == 0:
+    if number % 73 == 0:
         return "365"
     elif number % 33 == 0:
         return "SEC"
@@ -33,6 +33,7 @@ def hello_mogunabi():
 
 @app.route("/fizzbuzz", methods=['GET'])
 def fizzbuzz():
+    # http://127.0.0.1:5555/fizzbuzz?number=37
     number = request.args.get('number')
     if number is None:
         return jsonify({'error': 'number is required'})
@@ -47,8 +48,12 @@ def fizzbuzz():
 
 @app.route("/fizzbuzz/random", methods=['GET'])
 def make_random_int():
+    # http://127.0.0.1:5555/fizzbuzz/random
     import random
     number = random.randint(1, 1000)
+    state = []
+    while state[0] == True & state[1] == True & state[2] == True:
+        number = random.randint(1, 1000)
     return jsonify({'result': fizzbuzz_number(number)})
 
 
