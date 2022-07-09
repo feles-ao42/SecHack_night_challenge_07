@@ -1,5 +1,4 @@
 from flask import request, Flask, jsonify
-import sqlite3
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -18,7 +17,7 @@ def after_request(response):
 
 @app.route("/")
 def hello_mogunabi():
-    return "<p>Hello, Mogu nabi!</p>"
+    return "<p>Hi I'm fizz buzz</p>"
 
 
 if __name__ == '__main__':
