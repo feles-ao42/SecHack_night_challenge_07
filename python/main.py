@@ -40,7 +40,7 @@ def fizzbuzz():
         number = int(number)
     except ValueError:
         return jsonify({'error': 'number is not integer'})
-    if number < 1 or number > 100:
+    if number < 1 or number > 1000:
         return jsonify({'error': 'number is out of range'})
     return jsonify({'result': fizzbuzz_number(number)})
 
