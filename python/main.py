@@ -11,7 +11,7 @@ CORS(app)
 url1 = "http://192.168.51.141:5555/fizzbuzz/while"  # 古本
 url2 = "http://192.168.51.168:5555/fizzbuzz/while"  # 武藤さん
 url3 = "http://192.168.51.169:5555/fizzbuzz/while"  # 田村さん
-url4 = "http://127.0.0.1:5555/fizzbuzz/while"  # さきさん
+url4 = "http://127.0.0.1:5000/fizzbuzz/while"  # さきさん
 
 
 @app.after_request
