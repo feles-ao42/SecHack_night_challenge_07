@@ -22,6 +22,11 @@ def after_request(response):
     return response
 
 
+@app.route("/")
+def hello_mogunabi():
+    return "<p>Hi I'm fizz buzz</p>"
+
+
 def fizzbuzz_number(number):
     number = int(number)
     if number % 73 == 0:
@@ -44,11 +49,6 @@ def check_state(state, fiz_num_return):
     else:
         state = ["False", "False", "False"]
     return state
-
-
-@app.route("/")
-def hello_mogunabi():
-    return "<p>Hi I'm fizz buzz</p>"
 
 
 def check_state_list(state, number):
