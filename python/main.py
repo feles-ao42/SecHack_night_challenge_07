@@ -69,21 +69,21 @@ def while_fizzbuzz():
     sanrokugo_state = request.args.get('sanrokugo_state')
     number = request.args.get('number')
     state = [sec_state, hack_state, sanrokugo_state]
-    if sec_state == "False" or hack_state == "False" or sanrokugo_state == "False":
-        sec_state, hack_state, sanrokugo_state, return_number = check_state_list(state, number)
-        return jsonify(
-            {"sec_state": sec_state, "hack_state": hack_state, "sanrokugo_state": sanrokugo_state,
-             "number": return_number})
+    sec_state, hack_state, sanrokugo_state, return_number = check_state_list(state, number)
+    return jsonify(
+        {"sec_state": sec_state, "hack_state": hack_state, "sanrokugo_state": sanrokugo_state,
+         "number": return_number})
 
 
 @app.route("/fizzbuzz/start", methods=['GET'])
 def start():
     # http://127.0.0.1:5555/fizzbuzz/random
     number = random.randint(0, 1000)
+    start_number = number
     sec_state = "False"
     hack_state = "False"
     sanrokugo_state = "False"
-    urllist = [url1, url2, url3, url4]
+    urllist = [url4, url4, url4, url4]
     urlnum = 0
     payload = {"hack_state": hack_state, "sec_state": sec_state, "sanrokugo_state": sanrokugo_state, "number": number}
 
@@ -99,7 +99,8 @@ def start():
             urlnum = 0
         else:
             urlnum += 1
-    return jsonify(sec_state, hack_state, sanrokugo_state, number, urlnum)
+    return "success!!! \nstart number is " + str(start_number) + "\nfinish number is " + str(
+        int(number) - 1) + "\nfinished by " + str(urllist[urlnum])
 
 
 if __name__ == '__main__':
